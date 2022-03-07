@@ -53,7 +53,7 @@ func get_one_random_word(db *sql.DB) bool {
 		var id int
 		var desc string
 		row.Scan(&id, &word, &desc)
-		log.Println("Person: ", word, " ", desc)
+    fmt.Println(word + ":", desc)
 		rows_available = true
 	}
 	return rows_available
