@@ -12,8 +12,6 @@ import (
   _ "github.com/mattn/go-sqlite3"
 )
 
-const kDbFilePath string = "dictionary.db"
-
 func open_db(db_path string) *sql.DB {
   db_pointer, _ := sql.Open("sqlite3", db_path)
   return db_pointer
@@ -82,11 +80,12 @@ func insert_word(word *string, desc *string, db *sql.DB) {
 func main() {
   word := flag.String("w", "", "word")
   desc := flag.String("d", "", "description")
+  database_path := flag.String("b", "dictionary.db", "database")
   flag.Parse()
-  if !check_db(kDbFilePath) {
+  if !check_db(*database_path) {
     fmt.Println("DB not available")
   } else {
-    db := open_db(kDbFilePath)
+    db := open_db(*database_path)
     if len(*word) > 0 && len(*desc) > 0 {
       insert_word(word, desc, db)
     } else {
