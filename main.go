@@ -89,11 +89,24 @@ func update_word(word *string, desc *string, db *sql.DB) {
   }
 }
 
+func remove(word *string, db *sql.DB) {
+  update_word_sql := `DELETE FROM dictionary WHERE word = ?`;
+  statement, err := db.Prepare(update_word_sql)
+  if err != nil {
+    log.Fatalln(err.Error())
+  }
+  _, err = statement.Exec(*word)
+  if err != nil {
+    log.Fatalln(err.Error())
+  }
+}
+
 func main() {
   word := flag.String("w", "", "word")
   desc := flag.String("d", "", "description")
   word_to_update := flag.String("u", "", "word to update")
   database_path := flag.String("b", "dictionary.db", "database")
+  remove_word := flag.String("r", "", "word for remove")
   flag.Parse()
   if !check_db(*database_path) {
     fmt.Println("DB not available")
@@ -103,6 +116,8 @@ func main() {
       insert_word(word, desc, db)
     } else if len(*word_to_update) > 0 && len(*desc) > 0 && len(*word) == 0 {
       update_word(word_to_update, desc, db)
+    } else if len(*remove_word) > 0 {
+      remove(remove_word, db)
     } else {
       for !get_one_random_word(db) {}
     }
